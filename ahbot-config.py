@@ -8,8 +8,8 @@ import random
 
 # Database connection settings
 DB_HOST = 'localhost'
-DB_USER = 'your-sql-username'
-DB_PASSWORD = 'your-sql-password'
+DB_USER = 'YourUserName'
+DB_PASSWORD = 'YourPassword'
 DB_DATABASE = 'mangos'
 
 # General multipliers for bid and buyout prices (applied to the sell_price field)
@@ -20,17 +20,14 @@ buyout_multiplier = 2.5  # Base multiplier for buyout price (for non-weapon/armo
 weapon_armor_bid_multiplier = 4    # Bid multiplier for weapons and armor
 weapon_armor_buyout_multiplier = 10  # Buyout multiplier for weapons and armor
 
-# Randomness ranges for price adjustments (e.g., ±5% variation)
+# Randomness ranges for price adjustments (e.g., ±25% variation)
 bid_variance = (0.75, 1.25)
 buyout_variance = (0.75, 1.25)
 
 # =========================
 # Variation Range Settings
 # =========================
-# For weapons (class 2) and armor (class 4), generate a random number of variations between these values. Unfortunately some items (e.g. Cenarion Bracers) appear multiple times in the source table so you will get multiple copies even with this limit in place. 
-# Use the follow query to see this - yyou can remove them if desired
-# SELECT entry, name FROM item_template WHERE entry = 16830;
-
+# For weapons (class 2) and armor (class 4), generate a random number of variations between these values.
 min_variations_weapon_armor = 1  # Minimum variations for weapons/armor
 max_variations_weapon_armor = 3  # Maximum variations for weapons/armor
 
@@ -47,7 +44,6 @@ max_variations_other = 6         # Maximum variations for other items
 #   0 = Grey (Poor), 1 = White (Common), 2 = Green (Uncommon),
 #   3 = Blue (Rare), 4 = Purple (Epic), 5 = Orange (Legendary),
 #   6 = Red (Artifact), 7 = Gold (Bind to Account)
-
 use_filter_quality = True
 allowed_qualities = [1, 2, 3, 4, 5]  # Adjust as desired
 
@@ -58,24 +54,10 @@ min_item_level = 0                    # Minimum item level (inclusive)
 max_item_level = 100                  # Maximum item level (inclusive)
 
 # Exclude Certain classes. See below for classes
-# 0 Consumable
-# 1 Container
-# 2 Weapon
-# 3 Gem
-# 4 Armor
-# 5 Reagent
-# 6 Projectile
-# 7 Trade Goods
-# 8 Generic(OBSOLETE)
-# 9 Recipe
-# 10 Money(OBSOLETE)
-# 11 Quiver
-# 12 Quest
-# 13 Key
-# 14 Permanent(OBSOLETE)
-# 15 Miscellaneous
-# 16 Glyph
-
+# 0 Consumable, 1 Container, 2 Weapon, 3 Gem, 4 Armor, 5 Reagent,
+# 6 Projectile, 7 Trade Goods, 8 Generic(OBSOLETE), 9 Recipe, 
+# 10 Money(OBSOLETE), 11 Quiver, 12 Quest, 13 Key, 14 Permanent(OBSOLETE),
+# 15 Miscellaneous, 16 Glyph
 exclude_classes = [8, 10, 12, 13, 14]
 
 # Exclude any item with "Deprecated" in its name
@@ -91,21 +73,13 @@ exclude_items = []  # e.g., [18948, 23456]
 # =========================
 # Bonding Rules (unchanged)
 # =========================
-# 0 No bounds
-# 1 Bind on Pickup
-# 2 BoE
-# 3 Bind on Use
-# 4 Quest Item
-# 5 Quest Item1
-
+# 0 No bounds, 1 Bind on Pickup, 2 BoE, 3 Bind on Use, 4 Quest Item, 5 Quest Item1
 def bonding_allowed(item_class, bonding):
     return bonding in (0, 2, 3)
-
 
 # =========================
 # END OF USER CONFIG
 # =========================
-
 
 # =========================
 # Class Labels for Comments
@@ -152,6 +126,9 @@ if exclude_deprecated:
 # Exclude items with "Test" in the name if desired
 if exclude_test:
     where_clauses.append("name NOT LIKE '%Test%'")
+
+# Exclude items with a sell_price of 0.
+where_clauses.append("sell_price > 0")
 
 if where_clauses:
     base_filter = " AND ".join(where_clauses)
@@ -270,4 +247,3 @@ print(f"Output written to {output_filename}")
 
 cursor.close()
 cnx.close()
-
