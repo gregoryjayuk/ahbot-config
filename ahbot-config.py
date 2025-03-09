@@ -8,8 +8,8 @@ import random
 
 # Database connection settings
 DB_HOST = 'localhost'
-DB_USER = 'mangos'
-DB_PASSWORD = 'mangos'
+DB_USER = 'your-sql-username'
+DB_PASSWORD = 'your-sql-password'
 DB_DATABASE = 'mangos'
 
 # General multipliers for bid and buyout prices (applied to the sell_price field)
